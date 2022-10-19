@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -35,7 +36,13 @@ service.interceptors.response.use(
     }
   },
   error => {
+    console.dir(error)
     Message.error((error.response && error.response.data && error.response.data.message) || error.message)
+    // 身份过期清空token
+    if (error?.response?.data?.code === 10002) {
+      store.dispatch('user/logOutActions')
+      router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
+    }
     return Promise.reject(error)
   }
 )

@@ -36,7 +36,6 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
-import { loginAPI } from '@/api'
 
 export default {
   name: 'Login',
@@ -87,7 +86,7 @@ export default {
           try {
             const res = await this.$store.dispatch('user/loginActions', this.loginForm)
             this.$message.success(res.message)
-            this.$router.replace('/')
+            this.$router.replace(this.$route.query.redirect || '/')
           } catch (error) {
             console.dir(error)
           }
