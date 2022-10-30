@@ -65,6 +65,18 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/excel',
+    component: Layout,
+    hidden: true, // 不显示左侧菜单
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/excle')
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

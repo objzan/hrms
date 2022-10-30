@@ -129,3 +129,14 @@ export function transTree(list, rootValue) {
   })
   return treeData // 遍历结束, rootValue的id对应下属们收集成功, 返回给上一次递归调用children, 加到父级对象的children属性下
 }
+
+// 把excel文件中的日期格式的内容转回成标准时间
+export function formatExcelDate(numb, format = '/') {
+  const old = numb - 1
+  const t = Math.round((old - Math.floor(old)) * 24 * 60 * 60)
+  const time = new Date(1900, 0, old, 0, 0, t)
+  const year = time.getFullYear()
+  const month = time.getMonth() + 1
+  const date = time.getDate()
+  return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date)
+}
