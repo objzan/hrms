@@ -33,7 +33,7 @@
           <el-table-column label="操作" width="280">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="lookDetialFn(scope.row.id, scope.row.formOfEmployment)"> 查看</el-button>
-              <el-button type="text" size="small">分配角色</el-button>
+              <el-button type="text" size="small" @click="setEmpRolesFn(scope.row.id)">分配角色</el-button>
               <el-button type="text" size="small" @click="deleteEmpFn(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -49,19 +49,26 @@
       <el-dialog title="新增员工" :visible.sync="dialogVisible" width="50%" @close="addEmpDialogCloseFn">
         <empDialogForm ref="addEmpDialogRef" :show-dialog.sync="dialogVisible" :tree-data="treeData" @addEmpEv="addEmpFn" />
       </el-dialog>
+
+      <!-- 分配角色对话框 -->
+      <el-dialog title="分配角色" :visible.sync="showRoleDialog" width="50%">
+        <AssignRoleDialog ref="assignRoleDialogRef" :show.sync="showRoleDialog" :all-roles-list="allRolesList" @addRolesEv="addRolesFn" />
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { getEmployeeListAPI, departmentsListAPI, addEmployeeAPI, deleteEmployeeAPI } from '@/api'
+import { getEmployeeListAPI, departmentsListAPI, addEmployeeAPI, deleteEmployeeAPI, getRolesAPI, getUserStaffPhotoAPI, assignRolesAPI } from '@/api'
 import { transTree } from '@/utils'
 import Employees from '@/api/constant/index.js'
 import dayjs from 'dayjs'
 import empDialogForm from './components/empDialogForm.vue'
+import AssignRoleDialog from './components/assignRoleDialog.vue'
 export default {
   components: {
-    empDialogForm
+    empDialogForm,
+    AssignRoleDialog
   },
   data() {
     return {
@@ -74,13 +81,17 @@ export default {
       total: 0, // 数据总条数
       hireTypeList: Employees.hireType,
       dialogVisible: false, // 添加对话框显示状态
-      treeData: []
+      treeData: [],
+      showRoleDialog: false, // 分配角色对话框
+      allRolesList: [], // 所有角色列表
+      checkEmpId: ''
     }
   },
 
   created() {
     this.getEmployeeListFn()
     this.getDepartmentsList()
+    this.getAllRolesListFn()
   },
   methods: {
     // 每页显示的条数发生改变时触发
@@ -212,8 +223,38 @@ export default {
         })
       })
     },
+    // 查看按钮方法
     lookDetialFn(id, formOfEmployment) {
       this.$router.push(`/employees/detail?id=${id}&form=${formOfEmployment}`)
+    },
+    // 分配角色按钮事件
+    async setEmpRolesFn(id) {
+      this.checkEmpId = id
+      // 获取员工基本信息
+      const res = await getUserStaffPhotoAPI(id)
+      this.showRoleDialog = true
+      this.$nextTick(() => {
+        this.$refs.assignRoleDialogRef.checkRolesList = res.data.roleIds
+      })
+    },
+    async getAllRolesListFn() {
+      const res = await getRolesAPI({
+        page: 1,
+        pagesize: 10
+      })
+      const allRes = await getRolesAPI({
+        page: 1,
+        pagesize: res.data.total
+      })
+      console.log(allRes)
+      this.allRolesList = allRes.data.rows
+    },
+    async addRolesFn(data) {
+      const res = await assignRolesAPI({
+        id: this.checkEmpId,
+        roleIds: data
+      })
+      this.$message.success(res.message)
     }
   }
 }
