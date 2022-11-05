@@ -42,6 +42,10 @@ export default {
       this.$emit('update:show', false)
     },
     confirmFn() {
+<<<<<<< HEAD
+=======
+      console.log(this.checkRolesList)
+>>>>>>> permission
       this.$emit('addRolesEv', this.checkRolesList)
       this.$emit('update:show', false)
     }

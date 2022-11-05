@@ -76,7 +76,15 @@
       </el-card>
 
       <!-- 添加部门对话框 -->
-      <departDialog ref="departDialog" :dialog-visible.sync="showDepartDialog" :employees-list="employeesList" :origin-list="originList" :click-depart-id="clickDepartId" :is-edit="isEdit" @addDepartEV="addDepartmentsFn" />
+      <departDialog
+        ref="departDialog"
+        :dialog-visible.sync="showDepartDialog"
+        :employees-list="employeesList"
+        :origin-list="originList"
+        :click-depart-id="clickDepartId"
+        :is-edit="isEdit"
+        @addDepartEV="addDepartmentsFn"
+      />
     </div>
   </div>
 </template>

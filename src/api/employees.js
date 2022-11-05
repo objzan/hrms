@@ -63,7 +63,7 @@ export const saveUserDetailByIdAPI = data => {
 }
 
 /**
- * 给员工分配角色
+ * 分配角色
  * @param {*} data
  * @returns Promise对象
  */

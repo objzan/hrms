@@ -14,18 +14,20 @@ export default {
   },
   render(h, context) {
     const { icon, title } = context.props
+    const that = context.parent
     const vnodes = []
 
     if (icon) {
       if (icon.includes('el-icon')) {
         vnodes.push(<i class={[icon, 'sub-el-icon']} />)
       } else {
-        vnodes.push(<svg-icon icon-class={icon}/>)
+        vnodes.push(<svg-icon icon-class={icon} />)
       }
     }
 
     if (title) {
-      vnodes.push(<span slot='title'>{(title)}</span>)
+      // eslint-disable-next-line jsx-quotes
+      vnodes.push(<span slot="title">{that.$t(`sidebar.${title.toLowerCase()}`)}</span>)
     }
     return vnodes
   }

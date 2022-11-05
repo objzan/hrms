@@ -9,8 +9,8 @@
 
         <!-- 自定义右侧内容 -->
         <template #slot-right>
-          <el-button type="danger" size="small" @click="importExcelBtnFn">导入excel</el-button>
-          <el-button type="success" size="small" @click="exportExcelBtnFn">导出excel</el-button>
+          <el-button v-power="'import'" type="danger" size="small" @click="importExcelBtnFn">导入excel</el-button>
+          <el-button v-power="'export'" type="success" size="small" @click="exportExcelBtnFn">导出excel</el-button>
           <el-button type="primary" size="small" @click="showAddDialogFn">新增员工</el-button>
         </template>
       </PageTools>
@@ -41,7 +41,15 @@
         <!-- 分页组件 -->
         <el-row type="flex" justify="center" align="middle" style="height: 60px">
           <!-- 分页区域 -->
-          <el-pagination :current-page="query.page" :page-sizes="[10, 15, 20, 25]" :page-size="query.size" layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+          <el-pagination
+            :current-page="query.page"
+            :page-sizes="[10, 15, 20, 25]"
+            :page-size="query.size"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
         </el-row>
       </el-card>
 
@@ -250,6 +258,10 @@ export default {
       this.allRolesList = allRes.data.rows
     },
     async addRolesFn(data) {
+<<<<<<< HEAD
+=======
+      console.log(data)
+>>>>>>> permission
       const res = await assignRolesAPI({
         id: this.checkEmpId,
         roleIds: data

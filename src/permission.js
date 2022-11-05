@@ -1,4 +1,4 @@
-import router from './router'
+import router, { asyncRoutes } from './router'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import store from './store'
@@ -9,7 +9,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/404']
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start()
   const token = store.getters.token
   if (token) {
@@ -19,7 +19,19 @@ router.beforeEach((to, from, next) => {
     } else {
       next()
       if (!store.getters.name) {
-        store.dispatch('user/getUserInfoActions')
+        const menus = await store.dispatch('user/getUserInfoActions')
+        const filterList = asyncRoutes.filter(routeObj => {
+          const routeName = routeObj.children[0].name.toLowerCase()
+          return menus.includes(routeName)
+        })
+        filterList.push({ path: '*', redirect: '/404', hidden: true })
+        router.addRoutes(filterList)
+        store.commit('permission/setRoutes', filterList)
+
+        next({
+          path: to.path,
+          replace: true
+        })
       }
     }
   } else {
