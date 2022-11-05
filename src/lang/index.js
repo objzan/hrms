@@ -11,7 +11,7 @@ Vue.use(VueI18n)
 
 // 创建国际化插件的实例
 const i18n = new VueI18n({
-  locale: 'en', // 设置地区，zh 表示中国地区
+  locale: 'zh', // 设置地区，zh 表示中国地区
   // 设置地区信息
   messages: {
     en: {
