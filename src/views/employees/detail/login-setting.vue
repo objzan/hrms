@@ -43,7 +43,7 @@ export default {
     },
     // 更新用户姓名、密码方法
     updataUserInfoFn() {
-      this.$refs.userForm.validate(async valid => {
+      this.$refs.userForm.validate(async (valid) => {
         if (!valid) return this.$message.error('请检查姓名和密码')
         const res = await saveUserDetailByIdAPI(this.userInfo)
         this.$message.success(res.message)

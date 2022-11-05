@@ -17,6 +17,11 @@ import '@/permission' // permission control
 
 import GlobalComponents from '@/components/index.js'
 
+import powerObj from '@/directive/power.js'
+Vue.directive('power', powerObj)
+
+import i18n from '@/lang'
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -42,5 +47,6 @@ new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   render: h => h(App)
 })

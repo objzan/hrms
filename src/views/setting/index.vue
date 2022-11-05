@@ -25,7 +25,15 @@
             </el-table>
 
             <!-- 分页区域 -->
-            <el-pagination :current-page="query.page" :page-sizes="[10, 15, 20, 25]" :page-size="query.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+            <el-pagination
+              :current-page="query.page"
+              :page-sizes="[10, 15, 20, 25]"
+              :page-size="query.pagesize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
           </el-tab-pane>
           <el-tab-pane label="公司信息" class="tab-pane">
             <el-alert title="对公司名称、公司地址、营业执照、公司地区的更新，将使得公司资料被重新审核，请谨慎修改" type="info" show-icon :closable="false" />
@@ -66,14 +74,24 @@
           </el-col>
         </el-row>
       </el-dialog>
+
+      <!-- 分配权限对话框 -->
+      <el-dialog title="分配权限" :visible.sync="assigndialogVisable">
+        <AssignPermission ref="assigndialogRef" v-model="assigndialogVisable" :permission-list="permissionList" :perm-ids-list="permIdsList" @assignPremEv="assignpremFn" />
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { getRolesAPI, getCompanyInfoAPI, addRolesAPI, getRolesInfoAPI, editRolesAPI, deleRolesAPI } from '@/api'
+import { getRolesAPI, getCompanyInfoAPI, addRolesAPI, getRolesInfoAPI, editRolesAPI, deleRolesAPI, getPermissionListAPI, assignPremissionAPI } from '@/api'
 import { mapGetters } from 'vuex'
+import AssignPermission from './assignPermission.vue'
+import { transTree } from '@/utils'
 export default {
+  components: {
+    AssignPermission
+  },
   data() {
     return {
       activeName: 'first',
@@ -95,7 +113,11 @@ export default {
         name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
         description: [{ required: true, message: '角色描述不能为空', trigger: 'blur' }]
       },
-      isEdit: false // 对话框编辑状态
+      isEdit: false, // 对话框编辑状态
+      assigndialogVisable: false, //  分配权限对话框状态
+      permissionList: [], // 扁平权限数据
+      permIdsList: [], // 权限点id列表
+      clickRolesId: ''
     }
   },
   computed: {
@@ -104,6 +126,7 @@ export default {
   created() {
     this.getRolesListFn()
     this.getCompanyInfoFn()
+    this.getPermissionListFn()
   },
   methods: {
     // 每页显示的条数发生改变时触发
@@ -119,7 +142,17 @@ export default {
     },
 
     // 设置角色
-    setRoles() {},
+    async setRoles(roleObj) {
+      this.permIdsList = []
+      this.clickRolesId = roleObj.id
+      const res = await getRolesInfoAPI(roleObj.id)
+      this.permIdsList = res.data.permIds
+      this.assigndialogVisable = true
+
+      // this.$nextTick(() => {
+      //   this.$refs.assigndialogRef.$refs.tree.setCheckedKeys(this.permIdsList)
+      // })
+    },
 
     // 编辑角色
     async editRoles(row) {
@@ -200,6 +233,18 @@ export default {
     // 关闭对话框回调
     colseDialogFn() {
       this.$refs.roleForm.resetFields()
+    },
+    async getPermissionListFn() {
+      const res = await getPermissionListAPI()
+      this.permissionList = transTree(res.data, '0')
+    },
+    async assignpremFn(premIdsList) {
+      console.log(premIdsList)
+      const res = await assignPremissionAPI({
+        id: this.clickRolesId,
+        permIds: premIdsList
+      })
+      this.$message.success(res.message)
     }
   }
 }

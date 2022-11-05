@@ -3,11 +3,14 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <div class="app-breadcrumb">
-      xxx有限公司
+      {{ $t('navbar.companyName') }}
       <span class="breadBtn">体验版</span>
     </div>
 
     <div class="right-menu">
+      <screen-full />
+      <!-- 语言包 -->
+      <lang class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar" class="user-avatar" />
@@ -120,6 +123,9 @@ export default {
     float: right;
     height: 100%;
     line-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:focus {
       outline: none;

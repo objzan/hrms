@@ -1,5 +1,6 @@
 import { loginAPI, getUserProfileAPI, getUserStaffPhotoAPI } from '@/api'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
@@ -56,11 +57,14 @@ const actions = {
     const { data: photoObj } = await getUserStaffPhotoAPI(userObj.userId)
     const newObj = { ...userObj, ...photoObj }
     commit('SET_USER', newObj)
+
+    return userObj.roles.menus
   },
 
   async logOutActions({ commit }) {
     commit('REMOVE_TOKEN')
     commit('RESET_STATE')
+    resetRouter()
   }
 }
 

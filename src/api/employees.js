@@ -61,3 +61,16 @@ export const saveUserDetailByIdAPI = data => {
     data
   })
 }
+
+/**
+ * 给角色分配权限
+ * @param {*} data
+ * @returns Promise对象
+ */
+export const assignRolesAPI = data => {
+  return request({
+    url: '/sys/user/assignRoles',
+    method: 'PUT',
+    data
+  })
+}
