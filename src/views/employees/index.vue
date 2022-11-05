@@ -258,10 +258,6 @@ export default {
       this.allRolesList = allRes.data.rows
     },
     async addRolesFn(data) {
-<<<<<<< HEAD
-=======
-      console.log(data)
->>>>>>> permission
       const res = await assignRolesAPI({
         id: this.checkEmpId,
         roleIds: data
